@@ -1,0 +1,328 @@
+/* layout */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 70ch;
+
+  .fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1 1 100%;
+    margin: .5rem;
+    margin-bottom: auto;
+    padding-bottom: .5rem;
+    border: 0;
+    min-width: 0;
+  }
+
+  .field {
+    flex: 4 1 100%;
+    margin: .5rem;
+    margin-bottom: auto;
+    padding-bottom: .5rem;
+
+    &--checkbox,
+    &--radio {
+      flex: 0 1 10ch;
+      margin-top: 0;
+    }
+
+    &--postal-code {
+      flex: 1 1 10ch;
+    }
+
+    &--address-level2,
+    &--city {
+      flex: 3 1 40ch;
+    }
+
+    &--submit {
+      flex: 1 1 10ch;
+      align-items: flex-start;
+    }
+
+    &.field--button {
+      flex-basis: auto;
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* component */
+/**
+ * Make the field a flex-container, reverse the order so label is on top.
+ */
+.field {
+  $self: &;
+
+  display: flex;
+  flex-flow: column-reverse;
+  margin-top: 1em;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  .validation-error {
+    color: #dc0000;
+    font-size: .75em;
+    line-height: 1.2;
+    padding-top: .2em;
+    padding-bottom: .2em;
+    display: block;
+  }
+
+  /**
+   * Add a transition to the label and input.
+   * I'm not even sure that touch-action: manipulation works on
+   * inputs, but hey, it's new and cool and could remove the
+   * pesky delay.
+   */
+  label,
+  input,
+  button,
+  textarea,
+  select {
+    transition: all 0.2s;
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    line-height: 1;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0.2em 0;
+    margin: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    display: block;
+
+    &:focus {
+      outline: 0;
+      box-shadow: none;
+    }
+  }
+
+  button,
+  input[type="submit"] {
+    padding: .2em .2em;
+    border: 1px solid #ccc;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 10ch;
+  }
+
+  label {
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: .05em;
+    cursor: text;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform-origin: bottom left;
+    transform: translate(0, 0) scale(.75);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"] {
+    border-bottom: 1px solid #ccc;
+    cursor: text;
+
+    &:required {
+      + label {
+        &::after {
+          content: '*';
+          font-size: .8666em;
+          color: #dc0000;
+          position: relative;
+          top: -.25em;
+        }
+      }
+    }
+
+    &.placeholder-shown {
+      + label {
+        transform: translate(0, 1.4em) scale(1);
+      }
+    }
+
+    &:focus {
+      + label {
+        transform: translate(0, 0) scale(.75);
+        cursor: pointer;
+      }
+
+      border-color: #666;
+
+      /**
+       * Show the placeholder when the input is focused.
+       */
+      &::placeholder {
+        opacity: 1;
+      }
+    }
+
+    /**
+     * By default, the placeholder should be transparent. Also, it should
+     * inherit the transition.
+     */
+    &::placeholder {
+      //opacity: 0;
+      transition: inherit;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /**
+     * Translate down and scale the label up to cover the placeholder,
+     * when following an input (with placeholder-shown support).
+     * Also make sure the label is only on one row, at max 2/3rds of the
+     * field—to make sure it scales properly and doesn't wrap.
+     */
+    /*&:placeholder-shown {
+      + label {
+        cursor: text;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transform-origin: bottom left;
+        transform: translate(0, 1.4em) scale(1);
+      }
+    }*/
+
+    /**
+     * When the element is focused, remove the label transform.
+     * Also, do this when the placeholder is _not_ shown, i.e. when
+     * there's something in the input at all.
+     */
+    /*&:not(:placeholder-shown),
+    &:focus {
+      + label {
+        max-width: 100%;
+        transform-origin: bottom left;
+        transform: translate(0, 0) scale(0.75);
+        cursor: pointer;
+      }
+    }
+
+    &:valid {
+      &:not(:placeholder-shown),
+      &:not(.placeholder-shown) {
+        border-color: #666;
+      }
+    }*/
+
+    &:invalid {
+      // transition-delay: 300ms;
+      // border-color: #dc0000;
+    }
+  }
+
+  /*input[type="checkbox"],
+  input[type="radio"] {
+    height: 1.5em;
+
+    &:not(:checked) {
+      + label {
+        cursor: text;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transform-origin: bottom left;
+        transform: translate(0, 1.4em) scale(1);
+      }
+    }
+
+    &:checked {
+      + label {
+        max-width: 100%;
+        transform-origin: bottom left;
+        transform: translate(0, 0) scale(0.75);
+        cursor: pointer;
+      }
+    }
+  }*/
+}
+
+
+input[type=checkbox],
+input[type=radio] {
+  display: none;
+
+  + label {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    font-size: 1em;
+    transform: none;
+    //font-variant: none;
+    //text-transform: none;
+    cursor: pointer;
+
+    &::before {
+      content: "";
+      box-sizing: border-box;
+      display: inline-block;
+      height: 1em;
+      width: 1em;
+      border: 1px solid #444444;
+      transition: .15s all ease-out;
+      vertical-align: middle;
+      margin-right: .5em;
+    }
+
+    > svg {
+      stroke: #444444;
+      stroke-width: 4px;
+      height: 0;
+      width: .8666em;
+      stroke-dasharray: 33;
+      position: absolute;
+      top: 50%;
+      left: .075em;
+      transform: translateY(-50%);
+    }
+  }
+
+  &:checked {
+    + label {
+      font-weight: bold;
+
+      > svg {
+        height: .8666em;
+        animation: form-checkmark ease-in-out .2s forwards;
+      }
+    }
+  }
+}
+
+input[type=radio] {
+  + label {
+    &:before {
+      border-radius: 1em;
+    }
+  }
+}
+
+/**
+ * keyframe animations
+ */
+@keyframes form-checkmark {
+  0% {
+    stroke-dashoffset: 33;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

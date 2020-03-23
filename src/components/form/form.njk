@@ -1,0 +1,39 @@
+{% macro input(
+    label,
+    id,
+    type="text",
+    required,
+    valueMissing,
+    pattern,
+    patternMismatch,
+    value="",
+    placeholder="&nbsp;"
+  )
+%}
+  <div class="field field--{{ type }}{% if id !== type %} field--{{ id }}{% endif %}">
+    <input
+        class="field__input"
+        type="{{ type }}"
+        name="{{ id | replace("-", "_") | safe }}{% if type == 'checkbox' %}[]{% endif %}"
+        id="{{ id }}{% if type == 'checkbox' or type == 'radio' %}-{{  value | replace(" ", "-") | lower }}{% endif %}"
+        placeholder="{{ placeholder | safe }}"
+        value="{{ value | escape }}"
+        {% if pattern %}pattern="{{ pattern }}" data-patternMismatch="{{ patternMismatch }}"{% endif %}
+        {% if required %}data-valueMissing="{{ valueMissing }}" required{% endif %}>
+    {% if label %}<label class="field__label" for="{{ id }}{% if type == 'checkbox' or type == 'radio' %}-{{  value | replace(" ", "-") | lower }}{% endif %}">{% if type == 'checkbox' or type == 'radio' %}<svg><use xlink:href="#icon-checkmark" /></svg>{% endif %}{{ label }}</label>{% endif %}
+  </div>
+{% endmacro %}
+
+
+{#
+{% import "./components/input/_form.njk" as form with context %}
+{{form.input(
+  label="Email",
+  type="email"
+  id="email",
+  pattern="[^@\s]+@[^@\s]+\.[^@\s]+",
+  patternMismatch="Your email must be something like foo@bar.tld!",
+  required="true",
+  valueMissing="We really need your email!"
+)}}
+#}
